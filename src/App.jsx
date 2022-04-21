@@ -1,45 +1,40 @@
-import { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import api from './api';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [title, setTitle] = useState(null);
+  const [page, setPage] = useState(1);
+  const [response, setResponse] = useState(null);
+
+  const getStream = async () => {
+    const response = await api.handleSearch(title, page);
+    setResponse(response);
+  };
+
+  console.log('data', response);
+
+  const onSubmit = async e => {
+    e.preventDefault();
+    e.stopPropagation();
+    getStream();
+  };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.jsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
+    <div className='App'>
+      <h1>Stream Checker</h1>
+
+      <form onSubmit={onSubmit}>
+        <input onChange={e => setTitle(e.target.value)} />
+        <input
+          type='number'
+          value={page}
+          onChange={e => setPage(e.target.value)}
+        />
+        <button type='submit'>Search</button>
+      </form>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
